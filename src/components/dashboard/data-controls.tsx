@@ -1,32 +1,21 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Calendar as CalendarIcon, ChevronDown } from 'lucide-react';
+import { Calendar as CalendarIcon } from 'lucide-react';
 import { format } from 'date-fns';
 import { DateRange, DayPicker } from 'react-day-picker';
 import 'react-day-picker/dist/style.css'; // Import base styles for react-day-picker
-import { WearableDataSource } from '@/services/wearable-api';
+// Removed WearableDataSource import as it's no longer needed
 
-const dataSources: { value: WearableDataSource; label: string }[] = [
-  { value: 'fitbit', label: 'Fitbit' },
-  { value: 'apple_health', label: 'Apple Health' },
-  { value: 'garmin', label: 'Garmin' },
-];
+// Removed dataSources constant
 
 export function DataControls() {
-  const [selectedDataSource, setSelectedDataSource] = useState<WearableDataSource>('fitbit');
+  // Removed selectedDataSource and handleDataSourceChange state/function
   const [dateRange, setDateRange] = useState<DateRange | undefined>({
     from: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
     to: new Date(),
   });
   const calendarModalRef = useRef<HTMLDialogElement>(null);
-
-  const handleDataSourceChange = (source: WearableDataSource) => {
-    setSelectedDataSource(source);
-    // Close dropdown if necessary (DaisyUI handles this internally for its dropdown)
-    console.log('Selected Data Source:', source);
-    // TODO: Add logic to refetch data based on the new source
-  };
 
   const handleDateRangeChange = (range: DateRange | undefined) => {
     setDateRange(range);
@@ -38,43 +27,31 @@ export function DataControls() {
     }
   };
 
-  const selectedLabel = dataSources.find(ds => ds.value === selectedDataSource)?.label || "Select source...";
-
   return (
-    <div className="flex items-center gap-2 md:gap-4">
-      {/* Data Source Selector using DaisyUI Dropdown */}
-      <div className="dropdown">
-        <button tabIndex={0} className="btn btn-outline w-[150px] justify-between text-sm font-normal">
-          {selectedLabel}
-          <ChevronDown className="h-4 w-4 opacity-50" />
-        </button>
-        <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-          {dataSources.map((source) => (
-            <li key={source.value}>
-              <a onClick={() => handleDataSourceChange(source.value)}>{source.label}</a>
-            </li>
-          ))}
-        </ul>
-      </div>
+    <div className="flex items-center gap-1 md:gap-2"> {/* Adjusted gap */}
+      {/* Removed Data Source Selector */}
 
       {/* Date Range Picker using DaisyUI Button + Modal + react-day-picker */}
+      {/* Button uses responsive classes: icon only on small screens, text+icon on medium+ */}
       <button
-        className="btn btn-outline w-[240px] justify-start text-left font-normal text-sm"
+        className="btn btn-ghost md:btn-outline btn-sm md:btn-md md:w-[240px] justify-start text-left font-normal md:text-sm p-2 md:p-2" // Adjusted padding and size
         onClick={() => calendarModalRef.current?.showModal()}
       >
-        <CalendarIcon className="mr-2 h-4 w-4" />
-        {dateRange?.from ? (
-          dateRange.to ? (
-            <>
-              {format(dateRange.from, 'LLL dd, y')} -{' '}
-              {format(dateRange.to, 'LLL dd, y')}
-            </>
-          ) : (
-            format(dateRange.from, 'LLL dd, y')
-          )
-        ) : (
-          <span>Pick a date range</span>
-        )}
+        <CalendarIcon className="h-4 w-4 md:mr-2" /> {/* Keep icon visible */}
+        <span className="hidden md:inline"> {/* Hide text span on small screens */}
+            {dateRange?.from ? (
+              dateRange.to ? (
+                <>
+                  {format(dateRange.from, 'LLL dd, y')} -{' '}
+                  {format(dateRange.to, 'LLL dd, y')}
+                </>
+              ) : (
+                format(dateRange.from, 'LLL dd, y')
+              )
+            ) : (
+              <span>Pick a date range</span>
+            )}
+        </span>
       </button>
 
       {/* Calendar Modal */}
@@ -109,6 +86,18 @@ export function DataControls() {
             .rdp-nav_button {
                  color: hsl(var(--p));
              }
+             /* Ensure modal content is visible */
+             .modal-box {
+                overflow: visible; /* Allow date picker popups if any */
+             }
+             @media (max-width: 767px) {
+               .rdp {
+                 --rdp-cell-size: 35px; /* Slightly smaller cells on mobile */
+               }
+               .modal-box {
+                  width: 95%; /* Adjust modal width on mobile */
+               }
+             }
           `}</style>
            <DayPicker
             initialFocus
@@ -116,12 +105,22 @@ export function DataControls() {
             defaultMonth={dateRange?.from}
             selected={dateRange}
             onSelect={handleDateRangeChange}
-            numberOfMonths={2}
+            numberOfMonths={1} // Show only 1 month on mobile for better fit
+            className="md:hidden" // Hide on medium and up
           />
-          <div className="modal-action">
+           <DayPicker
+            initialFocus
+            mode="range"
+            defaultMonth={dateRange?.from}
+            selected={dateRange}
+            onSelect={handleDateRangeChange}
+            numberOfMonths={2}
+             className="hidden md:block" // Hide on small screens
+          />
+          <div className="modal-action mt-4">
             <form method="dialog">
               {/* if there is a button in form, it will close the modal */}
-              <button className="btn">Close</button>
+              <button className="btn btn-sm md:btn-md">Close</button>
             </form>
           </div>
         </div>

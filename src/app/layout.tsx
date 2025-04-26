@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google'; // Using Inter as a suitable sans-serif font
 import './globals.css';
 import { ThemeProvider } from '@/context/theme-context'; // Import ThemeProvider
+import { ClientLayoutWrapper } from '@/components/layout/client-layout-wrapper'; // Import the wrapper
 
 const inter = Inter({
   subsets: ['latin'],
@@ -32,7 +33,10 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
         >
-            {children}
+           {/* Wrap children with the client-side wrapper */}
+           <ClientLayoutWrapper>
+             {children}
+           </ClientLayoutWrapper>
         </ThemeProvider>
       </body>
     </html>
