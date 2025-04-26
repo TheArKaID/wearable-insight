@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google'; // Using Inter as a suitable sans-seri
 import './globals.css';
 import { ThemeProvider } from '@/context/theme-context'; // Import ThemeProvider
 import { ClientLayoutWrapper } from '@/components/layout/client-layout-wrapper'; // Import the wrapper
+import React, { Suspense } from 'react';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -24,19 +25,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      {/* Removed cn utility and adjusted class directly */}
-      {/* ThemeProvider needs to wrap the content, but the data-theme attribute will be set by the provider */}
       <body className={`${inter.variable} min-h-screen font-sans antialiased`}>
         <ThemeProvider
-            attribute="data-theme"
-            defaultTheme="system" // Or "light" / "dark"
-            enableSystem
-            disableTransitionOnChange
+          attribute="data-theme"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
         >
-           {/* Wrap children with the client-side wrapper */}
-           <ClientLayoutWrapper>
-             {children}
-           </ClientLayoutWrapper>
+          <Suspense fallback={<div className="p-4 text-center">Loading...</div>}>
+            <ClientLayoutWrapper>
+              {children}
+            </ClientLayoutWrapper>
+          </Suspense>
         </ThemeProvider>
       </body>
     </html>
