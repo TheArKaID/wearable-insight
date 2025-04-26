@@ -1,9 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google'; // Using Inter as a suitable sans-serif font
 import './globals.css';
-import { cn } from '@/lib/utils';
-// Removed SidebarProvider import
-import { Toaster } from '@/components/ui/toaster';
+import { ThemeProvider } from '@/context/theme-context'; // Import ThemeProvider
 
 const inter = Inter({
   subsets: ['latin'],
@@ -25,15 +23,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={cn(
-          'min-h-screen bg-background font-sans antialiased',
-          inter.variable
-        )}
-      >
-        {/* Removed SidebarProvider wrapper */}
-        {children}
-        <Toaster />
+      {/* Removed cn utility and adjusted class directly */}
+      {/* ThemeProvider needs to wrap the content, but the data-theme attribute will be set by the provider */}
+      <body className={`${inter.variable} min-h-screen font-sans antialiased`}>
+        <ThemeProvider
+            attribute="data-theme"
+            defaultTheme="system" // Or "light" / "dark"
+            enableSystem
+            disableTransitionOnChange
+        >
+            {children}
+        </ThemeProvider>
       </body>
     </html>
   );

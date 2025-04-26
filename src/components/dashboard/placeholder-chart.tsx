@@ -1,15 +1,16 @@
 'use client';
 
-import * as React from 'react';
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
+import React from 'react';
+import dynamic from 'next/dynamic';
+import type { ApexOptions } from 'apexcharts';
+import { useTheme } from 'next-themes';
+import { Skeleton } from '@/components/common/skeleton'; // Import Skeleton for loading state
 
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from '@/components/ui/chart';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+// Dynamically import ApexCharts to ensure it only runs on the client side
+const Chart = dynamic(() => import('react-apexcharts'), {
+  ssr: false, // Disable server-side rendering for this component
+  loading: () => <Skeleton className="min-h-[300px] w-full" /> // Show skeleton while loading
+});
 
 // Sample data - replace with actual fetched data
 const chartData = [
@@ -27,57 +28,119 @@ const chartData = [
   { date: '2024-07-12', value: 77 },
 ];
 
-const chartConfig = {
-  value: {
-    label: 'Metric Value',
-    color: 'hsl(var(--chart-1))', // Use theme color variable
-  },
-} satisfies ChartConfig;
-
 export function PlaceholderChart() {
-  // TODO: Add interaction logic (zoom, pan) if needed
-  // TODO: Adapt chart type (Line, Area) based on selected metric
+  const { theme } = useTheme();
+  const isDarkMode = theme === 'dark';
+
+  // Define series for ApexCharts
+  const series = [
+    {
+      name: 'Value',
+      data: chartData.map(item => item.value),
+    },
+  ];
+
+  // Define options for ApexCharts
+  const options: ApexOptions = {
+    chart: {
+      type: 'bar',
+      height: 300,
+      toolbar: {
+        show: false, // Hide toolbar for cleaner look
+      },
+      foreColor: isDarkMode ? '#A6ADBB' : '#373d3f', // Adjust text color based on theme
+    },
+    plotOptions: {
+      bar: {
+        borderRadius: 4, // Rounded corners for bars
+        horizontal: false,
+        columnWidth: '55%', // Adjust column width
+      },
+    },
+    dataLabels: {
+      enabled: false, // Disable data labels on bars
+    },
+    stroke: {
+      show: true,
+      width: 2,
+      colors: ['transparent'],
+    },
+    xaxis: {
+      categories: chartData.map(item =>
+        new Date(item.date).toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+        })
+      ),
+      labels: {
+        style: {
+          fontSize: '12px',
+          // Colors handled by foreColor
+        },
+      },
+      axisBorder: {
+        show: false, // Hide x-axis line
+      },
+      axisTicks: {
+        show: false, // Hide x-axis ticks
+      },
+    },
+    yaxis: {
+      title: {
+        text: undefined, // Hide Y-axis title if not needed
+      },
+       labels: {
+        style: {
+          fontSize: '12px',
+          // Colors handled by foreColor
+        },
+      },
+    },
+    fill: {
+      opacity: 1,
+      // Use CSS variables for colors to respect theme dynamically
+      // Note: ApexCharts might not directly support HSL strings from CSS variables in all contexts.
+      // It's safer to define colors directly or use a simple theme mapping.
+      colors: ['hsl(var(--p))'], // Use DaisyUI primary color
+    },
+    tooltip: {
+      theme: isDarkMode ? 'dark' : 'light', // Set tooltip theme
+      y: {
+        formatter: function (val) {
+          return val + ' units'; // Customize tooltip value format
+        },
+      },
+    },
+    grid: {
+      borderColor: isDarkMode ? '#373d3f' : '#e0e0e0', // Adjust grid line color based on theme
+      strokeDashArray: 4, // Dashed grid lines
+       yaxis: {
+            lines: {
+                show: true // Show horizontal grid lines
+            }
+        },
+        xaxis: {
+            lines: {
+                show: false // Hide vertical grid lines
+            }
+        }
+    },
+    theme: {
+        mode: isDarkMode ? 'dark' : 'light',
+        // Using the primary color directly
+        monochrome: {
+            enabled: true,
+            color: 'hsl(var(--p))',
+            shadeTo: isDarkMode ? 'dark' : 'light',
+            shadeIntensity: 0.65
+        },
+    },
+  };
+
   return (
-    <ChartContainer config={chartConfig} className="min-h-[300px] w-full">
-      <BarChart
-        accessibilityLayer // Improves accessibility
-        data={chartData}
-        margin={{
-          top: 5,
-          right: 10,
-          left: 10,
-          bottom: 5,
-        }}
-      >
-        <CartesianGrid vertical={false} strokeDasharray="3 3" />
-        <XAxis
-          dataKey="date"
-          tickLine={false}
-          axisLine={false}
-          tickMargin={8}
-          tickFormatter={(value) => {
-            // Basic date formatting
-            const date = new Date(value);
-            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-          }}
-        />
-         <YAxis
-          tickLine={false}
-          axisLine={false}
-          tickMargin={8}
-          // You might want to dynamically set the domain based on data
-          // domain={['dataMin - 5', 'dataMax + 5']}
-        />
-        <ChartTooltip
-          cursor={false} // Disable cursor line for bar chart if desired
-          content={<ChartTooltipContent hideLabel />} // Use Shadcn tooltip
-        />
-        <Bar
-          dataKey="value"
-          fill="var(--color-value)" // Use CSS variable from config
-          radius={4} // Add rounded corners
-        />
-      </BarChart>
-    </ChartContainer>
+    <div className="min-h-[300px] w-full text-xs">
+      {/* Render the dynamically imported chart */}
+      <Chart options={options} series={series} type="bar" height={300} width="100%" />
+    </div>
   );
 }

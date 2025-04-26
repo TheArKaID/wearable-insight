@@ -1,85 +1,60 @@
 import type { Config } from "tailwindcss";
 
 export default {
-    darkMode: ["class"],
+    darkMode: ["class", '[data-theme="dark"]'], // Enable dark mode based on class or data-theme attribute
     content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
-  	extend: {
-  		colors: {
-  			background: 'hsl(var(--background))',
-  			foreground: 'hsl(var(--foreground))',
-  			card: {
-  				DEFAULT: 'hsl(var(--card))',
-  				foreground: 'hsl(var(--card-foreground))'
-  			},
-  			popover: {
-  				DEFAULT: 'hsl(var(--popover))',
-  				foreground: 'hsl(var(--popover-foreground))'
-  			},
-  			primary: {
-  				DEFAULT: 'hsl(var(--primary))',
-  				foreground: 'hsl(var(--primary-foreground))'
-  			},
-  			secondary: {
-  				DEFAULT: 'hsl(var(--secondary))',
-  				foreground: 'hsl(var(--secondary-foreground))'
-  			},
-  			muted: {
-  				DEFAULT: 'hsl(var(--muted))',
-  				foreground: 'hsl(var(--muted-foreground))'
-  			},
-  			accent: {
-  				DEFAULT: 'hsl(var(--accent))',
-  				foreground: 'hsl(var(--accent-foreground))'
-  			},
-  			destructive: {
-  				DEFAULT: 'hsl(var(--destructive))',
-  				foreground: 'hsl(var(--destructive-foreground))'
-  			},
-  			border: 'hsl(var(--border))',
-  			input: 'hsl(var(--input))',
-  			ring: 'hsl(var(--ring))',
-  			chart: {
-  				'1': 'hsl(var(--chart-1))',
-  				'2': 'hsl(var(--chart-2))',
-  				'3': 'hsl(var(--chart-3))',
-  				'4': 'hsl(var(--chart-4))',
-  				'5': 'hsl(var(--chart-5))'
-  			},
-  			// Removed sidebar color definitions
-  		},
-  		borderRadius: {
-  			lg: 'var(--radius)',
-  			md: 'calc(var(--radius) - 2px)',
-  			sm: 'calc(var(--radius) - 4px)'
-  		},
-  		keyframes: {
-  			'accordion-down': {
-  				from: {
-  					height: '0'
-  				},
-  				to: {
-  					height: 'var(--radix-accordion-content-height)'
-  				}
-  			},
-  			'accordion-up': {
-  				from: {
-  					height: 'var(--radix-accordion-content-height)'
-  				},
-  				to: {
-  					height: '0'
-  				}
-  			}
-  		},
-  		animation: {
-  			'accordion-down': 'accordion-down 0.2s ease-out',
-  			'accordion-up': 'accordion-up 0.2s ease-out'
-  		}
-  	}
+    // Removed ShadCN specific theme extensions
+    extend: {
+        // Keep other extensions if needed, but remove ShadCN specific ones like keyframes and animations
+        // Keyframes and animations related to accordion are removed as they were ShadCN specific
+    }
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+      require("daisyui") // Add DaisyUI plugin
+  ],
+  // DaisyUI config
+  daisyui: {
+    themes: [
+        {
+            light: { // Light theme based on proposal
+              "primary": "#1A237E", // Dark Blue
+              "secondary": "#EEEEEE", // Light Gray
+              "accent": "#00BCD4", // Teal
+              "neutral": "#3d4451", // Default neutral
+              "base-100": "#ffffff", // White background
+              "info": "#3abff8",
+              "success": "#36d399",
+              "warning": "#fbbd23",
+              "error": "#f87272",
+              "--rounded-box": "0.5rem", // Apply rounded corners
+              "--rounded-btn": "0.5rem",
+            },
+        },
+        {
+            dark: { // Dark theme based on proposal (adjusting for DaisyUI names)
+              "primary": "#00BCD4", // Teal as primary in dark
+              "secondary": "#2a323c", // Default dark secondary
+              "accent": "#1A237E", // Dark Blue as accent in dark
+              "neutral": "#191d24",
+              "base-100": "#202020", // Dark background
+              "info": "#3abff8",
+              "success": "#36d399",
+              "warning": "#fbbd23",
+              "error": "#f87272",
+               "--rounded-box": "0.5rem", // Apply rounded corners
+              "--rounded-btn": "0.5rem",
+            }
+        }
+    ], // Add desired themes
+    // darkTheme: "dark", // REMOVED: next-themes handles the data-theme attribute
+    base: true, // Apply base styles
+    styled: true, // Apply DaisyUI component styles
+    utils: true, // Add DaisyUI utility classes
+    logs: true, // Show logs - good for development
+  },
 } satisfies Config;
