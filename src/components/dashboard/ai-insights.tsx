@@ -100,7 +100,7 @@ export function AiInsights() {
             disabled={isLoadingSummary}
           >
             {!isLoadingSummary && <RefreshCw className="mr-2 h-4 w-4" />}
-            {isLoadingSummary ? 'Generating...' : 'Regenerate Summary'}
+            {isLoadingSummary ? 'Generating...' : 'Regenerate'}
           </button>
         </div>
         {isLoadingSummary ? (
@@ -126,7 +126,7 @@ export function AiInsights() {
               disabled={isLoadingRecs}
             >
                 {!isLoadingRecs && <RefreshCw className="mr-2 h-4 w-4" />}
-                 {isLoadingRecs ? 'Generating...' : 'Regenerate Recommendations'}
+                 {isLoadingRecs ? 'Generating...' : 'Regenerate'}
             </button>
         </div>
         {isLoadingRecs ? (
