@@ -14,7 +14,7 @@ export function AppHeader() {
          {/* <label htmlFor="my-drawer" className="btn btn-ghost drawer-button lg:hidden">
            <Menu />
          </label> */}
-        <a className="btn btn-ghost text-lg md:text-xl font-semibold whitespace-nowrap">Wearable Insights</a> {/* Adjusted text size and added nowrap */}
+        <a className="btn btn-ghost text-lg md:text-xl font-semibold whitespace-nowrap">LingkarWaras</a> {/* Adjusted text size and added nowrap */}
       </div>
       <div className="navbar-end flex items-center gap-1 md:gap-2"> {/* Reduced gap on small screens */}
         <DataControls />

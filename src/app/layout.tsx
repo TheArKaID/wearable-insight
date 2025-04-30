@@ -11,7 +11,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: 'Wearable Insights',
+  title: 'LingkarWaras',
   description: 'Visualize and analyze your wearable health data.',
   icons: {
     icon: '/favicon.ico', // Assuming a favicon might exist or be added later
